@@ -44,6 +44,11 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
 }
 
+func (s *server) Plus(ctx context.Context, in *pb.PlusRequest) (*pb.PlusReply, error) {
+	log.Printf("Received: %v %v", in.A, in.B)
+	return &pb.PlusReply{Result: in.A + in.B}, nil
+}
+
 func main() {
 
 	runtime.GOMAXPROCS(1)
