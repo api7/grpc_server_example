@@ -23,12 +23,11 @@ import (
     "context"
     "encoding/json"
     "log"
-    "net/http"
-    "os"
     "runtime"
+    "sync"
     "time"
 
-    "sync"
+    "github.com/valyala/fasthttp"
 
     "google.golang.org/grpc"
     "google.golang.org/grpc/connectivity"
@@ -50,7 +49,7 @@ type poolConn struct {
 }
 
 const (
-    address = "127.0.0.1:9080"
+    address = "127.0.0.1:50051"
 )
 
 func main() {
@@ -59,13 +58,12 @@ func main() {
 
     p := NewPool(300, time.Minute)
 
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        r.ParseForm()
-        name := r.Form.Get("name")
+    listenAddr := "127.0.0.1:1212"
 
-        //cc, err := p.Get(l.Addr().String(), grpc.WithInsecure())
+    requestHandler := func(ctx *fasthttp.RequestCtx) {
+        getValues := ctx.QueryArgs()
+        name := getValues.Peek("name")
 
-        // Set up a connection to the server.
         conn, err := p.Get(address, grpc.WithInsecure())
         if err != nil {
             log.Fatalf("did not connect: %v", err)
@@ -75,13 +73,9 @@ func main() {
 
         c := pb.NewGreeterClient(conn.GetCC())
 
-        // Contact the server and print out its response.
-        if len(os.Args) > 1 {
-            name = os.Args[1]
-        }
-        ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+        ctx2, cancel := context.WithTimeout(context.Background(), time.Second)
         defer cancel()
-        gr, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
+        gr, err := c.SayHello(ctx2, &pb.HelloRequest{Name: string(name)})
 
         if err != nil {
             log.Fatalf("could not greet: %v", err)
@@ -92,10 +86,13 @@ func main() {
 
         b4, err := json.Marshal(m1)
 
-        w.Write([]byte(b4))
-    })
+        ctx.Write([]byte(b4))
+    }
 
-    http.ListenAndServe(":1210", nil)
+    if err := fasthttp.ListenAndServe(listenAddr, requestHandler); err != nil {
+        log.Fatalf("error in ListenAndServe: %s", err)
+    }
+
 }
 
 func NewPool(size int, ttl time.Duration) *Pool {
