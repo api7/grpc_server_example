@@ -73,7 +73,11 @@ func main() {
 
         c := pb.NewGreeterClient(conn.GetCC())
 
-        ctx2, cancel := context.WithTimeout(context.Background(), time.Second)
+        //ctx2, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+
+        clientDeadline := time.Now().Add(time.Duration(100) * time.Millisecond)
+        ctx2, cancel := context.WithDeadline(ctx, clientDeadline)
+
         defer cancel()
         gr, err := c.SayHello(ctx2, &pb.HelloRequest{Name: string(name)})
 
