@@ -44,6 +44,23 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
 }
 
+func (s *server) sayHelloAfterDelay(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+
+	select {
+	case <-ctx.Done():
+		errStr := ctx.Err().Error()
+		if ctx.Err() == context.DeadlineExceeded {
+			return nil, status.Error(codes.DeadlineExceeded, errStr)
+		}
+	}
+
+	time.Sleep(1 * time.Second)
+
+	log.Printf("Received: %v", in.Name)
+
+	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
+}
+
 func (s *server) Plus(ctx context.Context, in *pb.PlusRequest) (*pb.PlusReply, error) {
 	log.Printf("Received: %v %v", in.A, in.B)
 	return &pb.PlusReply{Result: in.A + in.B}, nil
