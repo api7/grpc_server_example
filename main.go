@@ -23,11 +23,16 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"runtime"
+	"time"
 
-	pb "github.com/nic-chen/grpc_server_example/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	pb "github.com/iresty/grpc_server_example/proto"
 	"google.golang.org/grpc"
 )
 
@@ -42,6 +47,25 @@ type server struct{}
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	log.Printf("Received: %v", in.Name)
 	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
+}
+
+func (s *server) SayHelloAfterDelay(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+
+	select {
+	case <-time.After(1 * time.Second):
+		fmt.Println("overslept")
+	case <-ctx.Done():
+		errStr := ctx.Err().Error()
+		if ctx.Err() == context.DeadlineExceeded {
+			return nil, status.Error(codes.DeadlineExceeded, errStr)
+		}
+	}
+
+	time.Sleep(1 * time.Second)
+
+	log.Printf("Received: %v", in.Name)
+
+	return &pb.HelloReply{Message: "Hello delay " + in.Name}, nil
 }
 
 func (s *server) Plus(ctx context.Context, in *pb.PlusRequest) (*pb.PlusReply, error) {
