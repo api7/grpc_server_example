@@ -23,6 +23,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"runtime"
@@ -51,6 +52,8 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 func (s *server) SayHelloAfterDelay(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 
 	select {
+	case <-time.After(1 * time.Second):
+		fmt.Println("overslept")
 	case <-ctx.Done():
 		errStr := ctx.Err().Error()
 		if ctx.Err() == context.DeadlineExceeded {
@@ -62,7 +65,7 @@ func (s *server) SayHelloAfterDelay(ctx context.Context, in *pb.HelloRequest) (*
 
 	log.Printf("Received: %v", in.Name)
 
-	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
+	return &pb.HelloReply{Message: "Hello delay " + in.Name}, nil
 }
 
 func (s *server) Plus(ctx context.Context, in *pb.PlusRequest) (*pb.PlusReply, error) {
