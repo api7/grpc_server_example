@@ -26,8 +26,12 @@ import (
 	"log"
 	"net"
 	"runtime"
+	"time"
 
-	pb "github.com/nic-chen/grpc_server_example/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	pb "github.com/iresty/grpc_server_example/proto"
 	"google.golang.org/grpc"
 )
 
@@ -44,7 +48,7 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
 }
 
-func (s *server) sayHelloAfterDelay(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+func (s *server) SayHelloAfterDelay(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 
 	select {
 	case <-ctx.Done():

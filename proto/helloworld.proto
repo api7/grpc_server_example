@@ -19,7 +19,7 @@ package helloworld;
 service Greeter {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
   rpc Plus (PlusRequest) returns (PlusReply) {}
-  rpc sayHelloAfterDelay (HelloRequest) returns (HelloReply) {}
+  rpc SayHelloAfterDelay (HelloRequest) returns (HelloReply) {}
 }
 
 message HelloRequest {
