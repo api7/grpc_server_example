@@ -34,7 +34,7 @@ func (m *HelloRequest) Reset()         { *m = HelloRequest{} }
 func (m *HelloRequest) String() string { return proto.CompactTextString(m) }
 func (*HelloRequest) ProtoMessage()    {}
 func (*HelloRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_1fc249e9ef3668a8, []int{0}
+	return fileDescriptor_helloworld_08b6b2f76799645a, []int{0}
 }
 func (m *HelloRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HelloRequest.Unmarshal(m, b)
@@ -72,7 +72,7 @@ func (m *HelloReply) Reset()         { *m = HelloReply{} }
 func (m *HelloReply) String() string { return proto.CompactTextString(m) }
 func (*HelloReply) ProtoMessage()    {}
 func (*HelloReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_1fc249e9ef3668a8, []int{1}
+	return fileDescriptor_helloworld_08b6b2f76799645a, []int{1}
 }
 func (m *HelloReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HelloReply.Unmarshal(m, b)
@@ -100,8 +100,8 @@ func (m *HelloReply) GetMessage() string {
 }
 
 type PlusRequest struct {
-	A                    int32    `protobuf:"varint,1,opt,name=a,proto3" json:"a,omitempty"`
-	B                    int32    `protobuf:"varint,2,opt,name=b,proto3" json:"b,omitempty"`
+	A                    int64    `protobuf:"varint,1,opt,name=a,proto3" json:"a,omitempty"`
+	B                    int64    `protobuf:"varint,2,opt,name=b,proto3" json:"b,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -111,7 +111,7 @@ func (m *PlusRequest) Reset()         { *m = PlusRequest{} }
 func (m *PlusRequest) String() string { return proto.CompactTextString(m) }
 func (*PlusRequest) ProtoMessage()    {}
 func (*PlusRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_1fc249e9ef3668a8, []int{2}
+	return fileDescriptor_helloworld_08b6b2f76799645a, []int{2}
 }
 func (m *PlusRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PlusRequest.Unmarshal(m, b)
@@ -131,14 +131,14 @@ func (m *PlusRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PlusRequest proto.InternalMessageInfo
 
-func (m *PlusRequest) GetA() int32 {
+func (m *PlusRequest) GetA() int64 {
 	if m != nil {
 		return m.A
 	}
 	return 0
 }
 
-func (m *PlusRequest) GetB() int32 {
+func (m *PlusRequest) GetB() int64 {
 	if m != nil {
 		return m.B
 	}
@@ -146,7 +146,7 @@ func (m *PlusRequest) GetB() int32 {
 }
 
 type PlusReply struct {
-	Result               int32    `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
+	Result               int64    `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -156,7 +156,7 @@ func (m *PlusReply) Reset()         { *m = PlusReply{} }
 func (m *PlusReply) String() string { return proto.CompactTextString(m) }
 func (*PlusReply) ProtoMessage()    {}
 func (*PlusReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_1fc249e9ef3668a8, []int{3}
+	return fileDescriptor_helloworld_08b6b2f76799645a, []int{3}
 }
 func (m *PlusReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PlusReply.Unmarshal(m, b)
@@ -176,7 +176,7 @@ func (m *PlusReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PlusReply proto.InternalMessageInfo
 
-func (m *PlusReply) GetResult() int32 {
+func (m *PlusReply) GetResult() int64 {
 	if m != nil {
 		return m.Result
 	}
@@ -328,12 +328,12 @@ var _Greeter_serviceDesc = grpc.ServiceDesc{
 	Metadata: "proto/helloworld.proto",
 }
 
-func init() { proto.RegisterFile("proto/helloworld.proto", fileDescriptor_helloworld_1fc249e9ef3668a8) }
+func init() { proto.RegisterFile("proto/helloworld.proto", fileDescriptor_helloworld_08b6b2f76799645a) }
 
-var fileDescriptor_helloworld_1fc249e9ef3668a8 = []byte{
+var fileDescriptor_helloworld_08b6b2f76799645a = []byte{
 	// 229 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x90, 0xc1, 0x4a, 0xc4, 0x30,
-	0x10, 0x86, 0x8d, 0xac, 0xbb, 0xee, 0xb8, 0xa7, 0x01, 0x6b, 0xd8, 0x93, 0x44, 0x10, 0xbd, 0x54,
+	0x10, 0x86, 0x8d, 0x2e, 0xbb, 0xee, 0xb8, 0xa7, 0x01, 0x6b, 0xd8, 0x93, 0x44, 0x10, 0xbd, 0x54,
 	0xd0, 0x8b, 0x27, 0x41, 0x10, 0xec, 0x51, 0xea, 0x13, 0xa4, 0x38, 0xea, 0x61, 0x6a, 0x6a, 0x92,
 	0x22, 0x79, 0x48, 0xdf, 0x49, 0x92, 0x36, 0x18, 0xd0, 0xd3, 0xde, 0xf2, 0xcd, 0x7c, 0x99, 0xf9,
 	0x13, 0xa8, 0x06, 0x6b, 0xbc, 0xb9, 0x7a, 0x27, 0x66, 0xf3, 0x65, 0x2c, 0xbf, 0xd4, 0xa9, 0x80,
@@ -345,6 +345,6 @@ var fileDescriptor_helloworld_1fc249e9ef3668a8 = []byte{
 	0xc8, 0x93, 0xc5, 0x3b, 0x38, 0x7c, 0xd6, 0x21, 0xc5, 0x40, 0x59, 0x17, 0x4f, 0x2a, 0xd3, 0x6f,
 	0xab, 0x7f, 0x3a, 0x03, 0x07, 0xb5, 0x87, 0xb7, 0xb0, 0x88, 0x0b, 0xf1, 0xa4, 0x34, 0x8a, 0xb4,
 	0xdb, 0xe3, 0xbf, 0x8d, 0xe9, 0x66, 0x03, 0x98, 0x37, 0xdf, 0xbf, 0x7a, 0xb2, 0x0f, 0xc4, 0x3a,
-	0xec, 0x92, 0xa1, 0x5b, 0xa6, 0xef, 0xbf, 0xf9, 0x09, 0x00, 0x00, 0xff, 0xff, 0xdc, 0x8c, 0x39,
-	0x4f, 0x98, 0x01, 0x00, 0x00,
+	0xec, 0x92, 0xa1, 0x5b, 0xa6, 0xef, 0xbf, 0xf9, 0x09, 0x00, 0x00, 0xff, 0xff, 0x83, 0xd8, 0x5e,
+	0x8c, 0x98, 0x01, 0x00, 0x00,
 }
