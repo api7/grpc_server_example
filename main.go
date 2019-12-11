@@ -73,8 +73,13 @@ func (s *server) Plus(ctx context.Context, in *pb.PlusRequest) (*pb.PlusReply, e
 	return &pb.PlusReply{Result: in.A + in.B}, nil
 }
 
-func main() {
+func (s *server) BotPayloadCheck(ctx context.Context, in *pb.BotRequest) (*pb.BotResponse, error) {
+	// log.Printf("Received: Host[%s]", in.Host)
+	// return &pb.BotResponse{Name: "name", Ret: 1, Session: "session"}, nil
+	return nil, status.Error(codes.DeadlineExceeded, "xxxxxx")
+}
 
+func main() {
 	runtime.GOMAXPROCS(1)
 
 	lis, err := net.Listen("tcp", port)

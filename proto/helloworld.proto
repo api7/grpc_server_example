@@ -20,6 +20,7 @@ service Greeter {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
   rpc Plus (PlusRequest) returns (PlusReply) {}
   rpc SayHelloAfterDelay (HelloRequest) returns (HelloReply) {}
+  rpc BotPayloadCheck(BotRequest) returns (BotResponse){}
 }
 
 message HelloRequest {
@@ -37,4 +38,25 @@ message PlusRequest {
 
 message PlusReply {
   int64 result = 1;
+}
+
+message BotRequest{
+    int64 appid = 1;
+    string host = 2;
+    int32 sdkflag = 3;
+    string ip = 4;
+    bytes url = 5;
+    bytes cookie = 6;
+    bytes getform = 7;
+    bytes postform = 8;
+    bytes postsdkform = 9;
+    bytes sign = 10;
+}
+
+message BotResponse{
+    int32 ret = 1;
+    string name = 2;
+    string session = 3;
+    int32 ts = 4;
+    string token = 5;
 }
