@@ -24,10 +24,12 @@ service Greeter {
 
 message HelloRequest {
   string name = 1;
+  repeated string items = 2;
 }
 
 message HelloReply {
   string message = 1;
+  repeated string items = 2;
 }
 
 message PlusRequest {

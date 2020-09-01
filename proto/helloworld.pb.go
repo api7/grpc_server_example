@@ -25,6 +25,7 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type HelloRequest struct {
 	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Items                []string `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -61,8 +62,16 @@ func (m *HelloRequest) GetName() string {
 	return ""
 }
 
+func (m *HelloRequest) GetItems() []string {
+	if m != nil {
+		return m.Items
+	}
+	return nil
+}
+
 type HelloReply struct {
 	Message              string   `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Items                []string `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -97,6 +106,13 @@ func (m *HelloReply) GetMessage() string {
 		return m.Message
 	}
 	return ""
+}
+
+func (m *HelloReply) GetItems() []string {
+	if m != nil {
+		return m.Items
+	}
+	return nil
 }
 
 type PlusRequest struct {
