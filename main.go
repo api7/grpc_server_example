@@ -23,22 +23,37 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net"
-	"runtime"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/iresty/grpc_server_example/proto"
-	"google.golang.org/grpc"
+	pb "github.com/api7/grpc_server_example/proto"
 )
 
-const (
-	port = ":50051"
+var (
+	grpcAddr  = ":50051"
+	grpcsAddr = ":50052"
+
+	crtFilePath = "../t/cert/apisix.crt"
+	keyFilePath = "../t/cert/apisix.key"
 )
+
+func init() {
+	flag.StringVar(&grpcAddr, "grpc-address", grpcAddr, "address for grpc")
+	flag.StringVar(&grpcsAddr, "grpcs-address", grpcsAddr, "address for grpcs")
+	flag.StringVar(&crtFilePath, "crt", crtFilePath, "path to certificate")
+	flag.StringVar(&keyFilePath, "key", keyFilePath, "path to key")
+}
 
 // server is used to implement helloworld.GreeterServer.
 type server struct{}
@@ -74,16 +89,39 @@ func (s *server) Plus(ctx context.Context, in *pb.PlusRequest) (*pb.PlusReply, e
 }
 
 func main() {
+	flag.Parse()
 
-	runtime.GOMAXPROCS(1)
+	go func() {
+		lis, err := net.Listen("tcp", grpcAddr)
+		if err != nil {
+			log.Fatalf("failed to listen: %v", err)
+		}
+		s := grpc.NewServer()
+		pb.RegisterGreeterServer(s, &server{})
+		if err := s.Serve(lis); err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+	}()
 
-	lis, err := net.Listen("tcp", port)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	go func() {
+		lis, err := net.Listen("tcp", grpcsAddr)
+		if err != nil {
+			log.Fatalf("failed to listen: %v", err)
+		}
+
+		c, err := credentials.NewServerTLSFromFile(crtFilePath, keyFilePath)
+		if err != nil {
+			log.Fatalf("credentials.NewServerTLSFromFile err: %v", err)
+		}
+		s := grpc.NewServer(grpc.Creds(c))
+		pb.RegisterGreeterServer(s, &server{})
+		if err := s.Serve(lis); err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+	}()
+
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
+	sig := <-signals
+	log.Printf("get signal %s, exit\n", sig.String())
 }

@@ -1,4 +1,4 @@
-module github.com/iresty/grpc_server_example
+module github.com/api7/grpc_server_example
 
 go 1.11
 
