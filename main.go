@@ -56,7 +56,7 @@ var (
 func init() {
 	flag.StringVar(&grpcAddr, "grpc-address", grpcAddr, "address for grpc")
 	flag.StringVar(&grpcsAddr, "grpcs-address", grpcsAddr, "address for grpcs")
-	flag.StringVar(&grpcsAddr, "grpcs-mtls-address", grpcsMtlsAddr, "address for grpcs in mTLS")
+	flag.StringVar(&grpcsMtlsAddr, "grpcs-mtls-address", grpcsMtlsAddr, "address for grpcs in mTLS")
 	flag.StringVar(&crtFilePath, "crt", crtFilePath, "path to certificate")
 	flag.StringVar(&keyFilePath, "key", keyFilePath, "path to key")
 	flag.StringVar(&caFilePath, "ca", caFilePath, "path to ca")
