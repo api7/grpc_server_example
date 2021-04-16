@@ -23,8 +23,11 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -41,18 +44,22 @@ import (
 )
 
 var (
-	grpcAddr  = ":50051"
-	grpcsAddr = ":50052"
+	grpcAddr      = ":50051"
+	grpcsAddr     = ":50052"
+	grpcsMtlsAddr string
 
 	crtFilePath = "../t/cert/apisix.crt"
 	keyFilePath = "../t/cert/apisix.key"
+	caFilePath  string
 )
 
 func init() {
 	flag.StringVar(&grpcAddr, "grpc-address", grpcAddr, "address for grpc")
 	flag.StringVar(&grpcsAddr, "grpcs-address", grpcsAddr, "address for grpcs")
+	flag.StringVar(&grpcsAddr, "grpcs-mtls-address", grpcsMtlsAddr, "address for grpcs in mTLS")
 	flag.StringVar(&crtFilePath, "crt", crtFilePath, "path to certificate")
 	flag.StringVar(&keyFilePath, "key", keyFilePath, "path to key")
+	flag.StringVar(&caFilePath, "ca", caFilePath, "path to ca")
 }
 
 // server is used to implement helloworld.GreeterServer.
@@ -119,6 +126,41 @@ func main() {
 			log.Fatalf("failed to serve: %v", err)
 		}
 	}()
+
+	if grpcsMtlsAddr != "" {
+		go func() {
+			lis, err := net.Listen("tcp", grpcsMtlsAddr)
+			if err != nil {
+				log.Fatalf("failed to listen: %v", err)
+			}
+
+			certificate, err := tls.LoadX509KeyPair(crtFilePath, keyFilePath)
+			if err != nil {
+				log.Fatalf("could not load server key pair: %s", err)
+			}
+
+			certPool := x509.NewCertPool()
+			ca, err := ioutil.ReadFile(caFilePath)
+			if err != nil {
+				log.Fatalf("could not read ca certificate: %s", err)
+			}
+
+			if ok := certPool.AppendCertsFromPEM(ca); !ok {
+				log.Fatalf("failed to append client certs")
+			}
+
+			c := credentials.NewTLS(&tls.Config{
+				ClientAuth:   tls.RequireAndVerifyClientCert,
+				Certificates: []tls.Certificate{certificate},
+				ClientCAs:    certPool,
+			})
+			s := grpc.NewServer(grpc.Creds(c))
+			pb.RegisterGreeterServer(s, &server{})
+			if err := s.Serve(lis); err != nil {
+				log.Fatalf("failed to serve: %v", err)
+			}
+		}()
+	}
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
