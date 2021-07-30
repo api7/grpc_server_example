@@ -16,7 +16,7 @@
  *
  */
 
-//go:generate protoc -I ../helloworld --go_out=plugins=grpc:../helloworld ../helloworld/helloworld.proto
+//go:generate protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/helloworld.proto
 
 // Package main implements a server for Greeter service.
 package main
@@ -63,12 +63,20 @@ func init() {
 }
 
 // server is used to implement helloworld.GreeterServer.
-type server struct{}
+type server struct {
+	// Embed the unimplemented server
+	pb.UnimplementedGreeterServer
+}
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	log.Printf("Received: %v", in.Name)
-	return &pb.HelloReply{Message: "Hello " + in.Name, Items: in.GetItems()}, nil
+	log.Printf("Enum Gender: %v", in.GetGender())
+	return &pb.HelloReply{
+		Message: "Hello " + in.Name,
+		Items:   in.GetItems(),
+		Gender:  in.GetGender(),
+	}, nil
 }
 
 func (s *server) SayHelloAfterDelay(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {

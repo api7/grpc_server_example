@@ -15,6 +15,7 @@
 syntax = "proto3";
 
 package helloworld;
+option go_package = "./proto";
 
 service Greeter {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
@@ -22,14 +23,22 @@ service Greeter {
   rpc SayHelloAfterDelay (HelloRequest) returns (HelloReply) {}
 }
 
+enum Gender {
+    GENDER_UNKNOWN = 0;
+    GENDER_MALE = 1;
+    GENDER_FEMALE = 2;
+}
+
 message HelloRequest {
   string name = 1;
   repeated string items = 2;
+  Gender gender = 3;
 }
 
 message HelloReply {
   string message = 1;
   repeated string items = 2;
+  Gender gender = 3;
 }
 
 message PlusRequest {
