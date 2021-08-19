@@ -72,8 +72,20 @@ type server struct {
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	log.Printf("Received: %v", in.Name)
 	log.Printf("Enum Gender: %v", in.GetGender())
+	msg := "Hello " + in.Name
+
+	person := in.GetPerson()
+	if person != nil {
+		if person.GetName() != "" {
+			msg += fmt.Sprintf(", name: %v", person.GetName())
+		}
+		if person.GetAge() != 0 {
+			msg += fmt.Sprintf(", age: %v", person.GetAge())
+		}
+	}
+
 	return &pb.HelloReply{
-		Message: "Hello " + in.Name,
+		Message: msg,
 		Items:   in.GetItems(),
 		Gender:  in.GetGender(),
 	}, nil
