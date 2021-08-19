@@ -13,3 +13,5 @@
 
 # Ignore binary
 /grpc_server_example
+
+grpc_server_example-amd64.tar.gz
