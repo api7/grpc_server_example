@@ -120,14 +120,13 @@ func (s *server) Plus(ctx context.Context, in *pb.PlusRequest) (*pb.PlusReply, e
 func (s *server) SayHelloMultiReply(req *pb.HelloRequest, stream pb.Greeter_SayHelloMultiReplyServer) error {
 	log.Printf("Received server side stream req: %v\n", req)
 
-	// Say Hello 5 time with sleep of 1 sec.
+	// Say Hello 5 times.
 	for i := 0; i < 5; i++ {
 		if err := stream.Send(&pb.HelloReply{
 			Message: fmt.Sprintf("Hello %s", req.Name),
 		}); err != nil {
 			return status.Errorf(codes.Unavailable, "Unable to stream request back to client: %v", err)
 		}
-		time.Sleep(time.Second)
 	}
 	return nil
 }
@@ -165,7 +164,7 @@ func (s *server) SayHelloMulti(stream pb.Greeter_SayHelloMultiServer) error {
 		time.Sleep(500 * time.Millisecond)
 
 		if err := stream.Send(&pb.HelloReply{Message: fmt.Sprintf("Hello %s", req.Name)}); err != nil {
-			return status.Errorf(codes.Unknown, "Failed to stream response back to client: ", err)
+			return status.Errorf(codes.Unknown, "Failed to stream response back to client: %v", err)
 		}
 	}
 }
