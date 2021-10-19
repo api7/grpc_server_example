@@ -18,9 +18,19 @@ package helloworld;
 option go_package = "./proto";
 
 service Greeter {
+  // Unary RPC.
   rpc SayHello (HelloRequest) returns (HelloReply) {}
   rpc Plus (PlusRequest) returns (PlusReply) {}
   rpc SayHelloAfterDelay (HelloRequest) returns (HelloReply) {}
+
+  // Server side streaming.
+  rpc SayHelloMultiReply (HelloRequest) returns (stream HelloReply) {}
+
+  // Client side streaming.
+  rpc SayHelloMultiReq (stream HelloRequest) returns (HelloReply) {}
+
+  // Bidirectional streaming.
+  rpc SayHelloMulti (stream HelloRequest) returns (stream HelloReply) {}
 }
 
 enum Gender {
