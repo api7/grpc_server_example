@@ -38,6 +38,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 
 	pb "github.com/api7/grpc_server_example/proto"
@@ -124,6 +125,7 @@ func main() {
 			log.Fatalf("failed to listen: %v", err)
 		}
 		s := grpc.NewServer()
+		reflection.Register(s)
 		pb.RegisterGreeterServer(s, &server{})
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)
@@ -141,6 +143,7 @@ func main() {
 			log.Fatalf("credentials.NewServerTLSFromFile err: %v", err)
 		}
 		s := grpc.NewServer(grpc.Creds(c))
+		reflection.Register(s)
 		pb.RegisterGreeterServer(s, &server{})
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)
@@ -175,6 +178,7 @@ func main() {
 				ClientCAs:    certPool,
 			})
 			s := grpc.NewServer(grpc.Creds(c))
+			reflection.Register(s)
 			pb.RegisterGreeterServer(s, &server{})
 			if err := s.Serve(lis); err != nil {
 				log.Fatalf("failed to serve: %v", err)
