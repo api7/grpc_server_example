@@ -116,8 +116,8 @@ func (s *server) Plus(ctx context.Context, in *pb.PlusRequest) (*pb.PlusReply, e
 	return &pb.PlusReply{Result: in.A + in.B}, nil
 }
 
-// SayHelloMultiReply streams HelloReply back to the client.
-func (s *server) SayHelloMultiReply(req *pb.HelloRequest, stream pb.Greeter_SayHelloMultiReplyServer) error {
+// SayHelloServerStream streams HelloReply back to the client.
+func (s *server) SayHelloServerStream(req *pb.HelloRequest, stream pb.Greeter_SayHelloServerStreamServer) error {
 	log.Printf("Received server side stream req: %v\n", req)
 
 	// Say Hello 5 times.
@@ -131,9 +131,9 @@ func (s *server) SayHelloMultiReply(req *pb.HelloRequest, stream pb.Greeter_SayH
 	return nil
 }
 
-// SayHelloMultiReq receives a stream of HelloRequest from a client.
-func (s *server) SayHelloMultiReq(stream pb.Greeter_SayHelloMultiReqServer) error {
-	log.Println("SayHelloMultiReq client side streaming has been initiated.")
+// SayHelloClientStream receives a stream of HelloRequest from a client.
+func (s *server) SayHelloClientStream(stream pb.Greeter_SayHelloClientStreamServer) error {
+	log.Println("SayHello client side streaming has been initiated.")
 	cache := ""
 	for {
 		req, err := stream.Recv()
@@ -147,9 +147,9 @@ func (s *server) SayHelloMultiReq(stream pb.Greeter_SayHelloMultiReqServer) erro
 	}
 }
 
-// SayHelloMulti establishes a bidirectional stream with the client.
-func (s *server) SayHelloMulti(stream pb.Greeter_SayHelloMultiServer) error {
-	log.Println("SayHelloMulti bidirectional streaming has been initiated.")
+// SayHelloBidirectionalStream establishes a bidirectional stream with the client.
+func (s *server) SayHelloBidirectionalStream(stream pb.Greeter_SayHelloBidirectionalStreamServer) error {
+	log.Println("SayHello bidirectional streaming has been initiated.")
 
 	for {
 		req, err := stream.Recv()

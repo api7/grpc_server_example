@@ -24,13 +24,13 @@ service Greeter {
   rpc SayHelloAfterDelay (HelloRequest) returns (HelloReply) {}
 
   // Server side streaming.
-  rpc SayHelloMultiReply (HelloRequest) returns (stream HelloReply) {}
+  rpc SayHelloServerStream (HelloRequest) returns (stream HelloReply) {}
 
   // Client side streaming.
-  rpc SayHelloMultiReq (stream HelloRequest) returns (HelloReply) {}
+  rpc SayHelloClientStream (stream HelloRequest) returns (HelloReply) {}
 
   // Bidirectional streaming.
-  rpc SayHelloMulti (stream HelloRequest) returns (stream HelloReply) {}
+  rpc SayHelloBidirectionalStream (stream HelloRequest) returns (stream HelloReply) {}
 }
 
 enum Gender {
