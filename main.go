@@ -27,6 +27,7 @@ import (
 	"crypto/x509"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net"
@@ -115,6 +116,59 @@ func (s *server) Plus(ctx context.Context, in *pb.PlusRequest) (*pb.PlusReply, e
 	return &pb.PlusReply{Result: in.A + in.B}, nil
 }
 
+// SayHelloServerStream streams HelloReply back to the client.
+func (s *server) SayHelloServerStream(req *pb.HelloRequest, stream pb.Greeter_SayHelloServerStreamServer) error {
+	log.Printf("Received server side stream req: %v\n", req)
+
+	// Say Hello 5 times.
+	for i := 0; i < 5; i++ {
+		if err := stream.Send(&pb.HelloReply{
+			Message: fmt.Sprintf("Hello %s", req.Name),
+		}); err != nil {
+			return status.Errorf(codes.Unavailable, "Unable to stream request back to client: %v", err)
+		}
+	}
+	return nil
+}
+
+// SayHelloClientStream receives a stream of HelloRequest from a client.
+func (s *server) SayHelloClientStream(stream pb.Greeter_SayHelloClientStreamServer) error {
+	log.Println("SayHello client side streaming has been initiated.")
+	cache := ""
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&pb.HelloReply{Message: cache})
+		}
+		if err != nil {
+			return status.Errorf(codes.Unavailable, "Failed to read client stream: %v", err)
+		}
+		cache = fmt.Sprintf("%sHello %s!", cache, req.Name)
+	}
+}
+
+// SayHelloBidirectionalStream establishes a bidirectional stream with the client.
+func (s *server) SayHelloBidirectionalStream(stream pb.Greeter_SayHelloBidirectionalStreamServer) error {
+	log.Println("SayHello bidirectional streaming has been initiated.")
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.Send(&pb.HelloReply{Message: "stream ended"})
+		}
+		if err != nil {
+			return status.Errorf(codes.Unavailable, "Failed to read client stream: %v", err)
+		}
+
+		// A small 0.5 sec sleep
+		time.Sleep(500 * time.Millisecond)
+
+		if err := stream.Send(&pb.HelloReply{Message: fmt.Sprintf("Hello %s", req.Name)}); err != nil {
+			return status.Errorf(codes.Unknown, "Failed to stream response back to client: %v", err)
+		}
+	}
+}
+
 func main() {
 	flag.Parse()
 
@@ -182,7 +236,7 @@ func main() {
 		}()
 	}
 
-	signals := make(chan os.Signal, 1)
+	signals := make(chan os.Signal)
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 	sig := <-signals
 	log.Printf("get signal %s, exit\n", sig.String())
