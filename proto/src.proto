@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package helloworld;
+option go_package = "./proto";
+
+import "proto/import.proto";
+
+service TestImport {
+  rpc Run (Request) returns (pkg.Response) {}
+}
+
+message Request {
+  pkg.User user = 1;
+  string body = 2;
+}

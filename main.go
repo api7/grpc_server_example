@@ -17,6 +17,8 @@
  */
 
 //go:generate protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/helloworld.proto
+//go:generate protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/import.proto
+//go:generate protoc  --include_imports --descriptor_set_out=proto.pb --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/src.proto
 
 // Package main implements a server for Greeter service.
 package main
@@ -68,6 +70,7 @@ func init() {
 type server struct {
 	// Embed the unimplemented server
 	pb.UnimplementedGreeterServer
+	pb.UnimplementedTestImportServer
 }
 
 // SayHello implements helloworld.GreeterServer
@@ -170,6 +173,10 @@ func (s *server) SayHelloBidirectionalStream(stream pb.Greeter_SayHelloBidirecti
 	}
 }
 
+func (s *server) Run(ctx context.Context, in *pb.Request) (*pb.Response, error) {
+	return &pb.Response{Body: in.User.Name + " " + in.Body}, nil
+}
+
 func main() {
 	flag.Parse()
 
@@ -181,6 +188,7 @@ func main() {
 		s := grpc.NewServer()
 		reflection.Register(s)
 		pb.RegisterGreeterServer(s, &server{})
+		pb.RegisterTestImportServer(s, &server{})
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)
 		}
