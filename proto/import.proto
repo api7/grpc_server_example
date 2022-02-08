@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package pkg;
+option go_package = "./proto";
+
+message User {
+    string name = 1;
+}
+
+message Response {
+  string body = 1;
+}
