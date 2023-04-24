@@ -20,6 +20,7 @@ option go_package = "./proto";
 service Greeter {
   // Unary RPC.
   rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc GetErrResp (HelloRequest) returns (HelloReply) {}
   rpc Plus (PlusRequest) returns (PlusReply) {}
   rpc SayHelloAfterDelay (HelloRequest) returns (HelloReply) {}
 
@@ -64,4 +65,10 @@ message PlusRequest {
 
 message PlusReply {
   int64 result = 1;
+}
+
+message ErrorDetail {
+  int64 code = 1;
+  string message = 2;
+  string type = 3;
 }
