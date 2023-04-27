@@ -38,6 +38,6 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: api7/grpc_server_example:${{ steps.tag_env.outputs.version }}
+          tags: api7/grpc-server-example:${{ steps.tag_env.outputs.version }}
           build-args: |
             VERSION=${{ steps.tag_env.outputs.version }}
