@@ -52,8 +52,8 @@ var (
 	grpcsAddr     = ":50052"
 	grpcsMtlsAddr string
 
-	crtFilePath = "./t/cert/apisix.crt"
-	keyFilePath = "./t/cert/apisix.key"
+	crtFilePath = "../t/cert/apisix.crt"
+	keyFilePath = "../t/cert/apisix.key"
 	caFilePath  string
 )
 
