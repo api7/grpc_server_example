@@ -3,7 +3,7 @@ syntax = "proto3";
 package echo;
 option go_package="./proto";
 
-service Echo {
+service EchoService {
   rpc Echo (EchoMsg) returns (EchoMsg);
 }
 
