@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EchoClient interface {
-	Hi(ctx context.Context, in *EchoMsg, opts ...grpc.CallOption) (*EchoMsg, error)
+	Echo(ctx context.Context, in *EchoMsg, opts ...grpc.CallOption) (*EchoMsg, error)
 }
 
 type echoClient struct {
@@ -33,9 +33,9 @@ func NewEchoClient(cc grpc.ClientConnInterface) EchoClient {
 	return &echoClient{cc}
 }
 
-func (c *echoClient) Hi(ctx context.Context, in *EchoMsg, opts ...grpc.CallOption) (*EchoMsg, error) {
+func (c *echoClient) Echo(ctx context.Context, in *EchoMsg, opts ...grpc.CallOption) (*EchoMsg, error) {
 	out := new(EchoMsg)
-	err := c.cc.Invoke(ctx, "/echo.Echo/Hi", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/echo.Echo/Echo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *echoClient) Hi(ctx context.Context, in *EchoMsg, opts ...grpc.CallOptio
 // All implementations must embed UnimplementedEchoServer
 // for forward compatibility
 type EchoServer interface {
-	Hi(context.Context, *EchoMsg) (*EchoMsg, error)
+	Echo(context.Context, *EchoMsg) (*EchoMsg, error)
 	mustEmbedUnimplementedEchoServer()
 }
 
@@ -54,8 +54,8 @@ type EchoServer interface {
 type UnimplementedEchoServer struct {
 }
 
-func (UnimplementedEchoServer) Hi(context.Context, *EchoMsg) (*EchoMsg, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Hi not implemented")
+func (UnimplementedEchoServer) Echo(context.Context, *EchoMsg) (*EchoMsg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
 func (UnimplementedEchoServer) mustEmbedUnimplementedEchoServer() {}
 
@@ -70,20 +70,20 @@ func RegisterEchoServer(s grpc.ServiceRegistrar, srv EchoServer) {
 	s.RegisterService(&Echo_ServiceDesc, srv)
 }
 
-func _Echo_Hi_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Echo_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EchoMsg)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EchoServer).Hi(ctx, in)
+		return srv.(EchoServer).Echo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/echo.Echo/Hi",
+		FullMethod: "/echo.Echo/Echo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EchoServer).Hi(ctx, req.(*EchoMsg))
+		return srv.(EchoServer).Echo(ctx, req.(*EchoMsg))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +96,8 @@ var Echo_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*EchoServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Hi",
-			Handler:    _Echo_Hi_Handler,
+			MethodName: "Echo",
+			Handler:    _Echo_Echo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
