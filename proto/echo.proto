@@ -4,7 +4,7 @@ package echo;
 option go_package="./proto";
 
 service Echo {
-  rpc Hi (EchoMsg) returns (EchoMsg);
+  rpc Echo (EchoMsg) returns (EchoMsg);
 }
 
 message EchoMsg {
