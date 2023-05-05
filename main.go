@@ -193,9 +193,9 @@ func (s *server) SayHelloBidirectionalStream(stream pb.Greeter_SayHelloBidirecti
 
 // Hi implements echo.Echo/Hi
 func (s *server) Hi(ctx context.Context, in *pb.EchoMsg) (*pb.EchoMsg, error) {
-	msg := "Hi " + in.Content
+	msg := "Hi " + in.Msg
 	return &pb.EchoMsg{
-		Content: msg,
+		Msg: msg,
 	}, nil
 }
 

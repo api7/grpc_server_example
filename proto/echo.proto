@@ -8,5 +8,5 @@ service Echo {
 }
 
 message EchoMsg {
-  string content = 1;
+  string msg = 1;
 }
