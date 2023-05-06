@@ -18,86 +18,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// EchoClient is the client API for Echo service.
+// EchoServiceClient is the client API for EchoService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type EchoClient interface {
-	Hi(ctx context.Context, in *EchoMsg, opts ...grpc.CallOption) (*EchoMsg, error)
+type EchoServiceClient interface {
+	Echo(ctx context.Context, in *EchoMsg, opts ...grpc.CallOption) (*EchoMsg, error)
 }
 
-type echoClient struct {
+type echoServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewEchoClient(cc grpc.ClientConnInterface) EchoClient {
-	return &echoClient{cc}
+func NewEchoServiceClient(cc grpc.ClientConnInterface) EchoServiceClient {
+	return &echoServiceClient{cc}
 }
 
-func (c *echoClient) Hi(ctx context.Context, in *EchoMsg, opts ...grpc.CallOption) (*EchoMsg, error) {
+func (c *echoServiceClient) Echo(ctx context.Context, in *EchoMsg, opts ...grpc.CallOption) (*EchoMsg, error) {
 	out := new(EchoMsg)
-	err := c.cc.Invoke(ctx, "/echo.Echo/Hi", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/echo.EchoService/Echo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// EchoServer is the server API for Echo service.
-// All implementations must embed UnimplementedEchoServer
+// EchoServiceServer is the server API for EchoService service.
+// All implementations must embed UnimplementedEchoServiceServer
 // for forward compatibility
-type EchoServer interface {
-	Hi(context.Context, *EchoMsg) (*EchoMsg, error)
-	mustEmbedUnimplementedEchoServer()
+type EchoServiceServer interface {
+	Echo(context.Context, *EchoMsg) (*EchoMsg, error)
+	mustEmbedUnimplementedEchoServiceServer()
 }
 
-// UnimplementedEchoServer must be embedded to have forward compatible implementations.
-type UnimplementedEchoServer struct {
+// UnimplementedEchoServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedEchoServiceServer struct {
 }
 
-func (UnimplementedEchoServer) Hi(context.Context, *EchoMsg) (*EchoMsg, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Hi not implemented")
+func (UnimplementedEchoServiceServer) Echo(context.Context, *EchoMsg) (*EchoMsg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
-func (UnimplementedEchoServer) mustEmbedUnimplementedEchoServer() {}
+func (UnimplementedEchoServiceServer) mustEmbedUnimplementedEchoServiceServer() {}
 
-// UnsafeEchoServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to EchoServer will
+// UnsafeEchoServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to EchoServiceServer will
 // result in compilation errors.
-type UnsafeEchoServer interface {
-	mustEmbedUnimplementedEchoServer()
+type UnsafeEchoServiceServer interface {
+	mustEmbedUnimplementedEchoServiceServer()
 }
 
-func RegisterEchoServer(s grpc.ServiceRegistrar, srv EchoServer) {
-	s.RegisterService(&Echo_ServiceDesc, srv)
+func RegisterEchoServiceServer(s grpc.ServiceRegistrar, srv EchoServiceServer) {
+	s.RegisterService(&EchoService_ServiceDesc, srv)
 }
 
-func _Echo_Hi_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _EchoService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EchoMsg)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EchoServer).Hi(ctx, in)
+		return srv.(EchoServiceServer).Echo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/echo.Echo/Hi",
+		FullMethod: "/echo.EchoService/Echo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EchoServer).Hi(ctx, req.(*EchoMsg))
+		return srv.(EchoServiceServer).Echo(ctx, req.(*EchoMsg))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Echo_ServiceDesc is the grpc.ServiceDesc for Echo service.
+// EchoService_ServiceDesc is the grpc.ServiceDesc for EchoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Echo_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "echo.Echo",
-	HandlerType: (*EchoServer)(nil),
+var EchoService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "echo.EchoService",
+	HandlerType: (*EchoServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Hi",
-			Handler:    _Echo_Hi_Handler,
+			MethodName: "Echo",
+			Handler:    _EchoService_Echo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

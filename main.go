@@ -72,7 +72,7 @@ type server struct {
 	// Embed the unimplemented server
 	pb.UnimplementedGreeterServer
 	pb.UnimplementedTestImportServer
-	pb.UnsafeEchoServer
+	pb.UnimplementedEchoServiceServer
 }
 
 // SayHello implements helloworld.GreeterServer
@@ -191,9 +191,9 @@ func (s *server) SayHelloBidirectionalStream(stream pb.Greeter_SayHelloBidirecti
 	}
 }
 
-// Hi implements echo.Echo/Hi
-func (s *server) Hi(ctx context.Context, in *pb.EchoMsg) (*pb.EchoMsg, error) {
-	msg := "Hi " + in.Msg
+// Echo implements echo.EchoService/Echo
+func (s *server) Echo(ctx context.Context, in *pb.EchoMsg) (*pb.EchoMsg, error) {
+	msg := in.Msg
 	return &pb.EchoMsg{
 		Msg: msg,
 	}, nil
@@ -215,7 +215,7 @@ func main() {
 		reflection.Register(s)
 		pb.RegisterGreeterServer(s, &server{})
 		pb.RegisterTestImportServer(s, &server{})
-		pb.RegisterEchoServer(s, &server{})
+		pb.RegisterEchoServiceServer(s, &server{})
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)
 		}
@@ -234,7 +234,7 @@ func main() {
 		s := grpc.NewServer(grpc.Creds(c))
 		reflection.Register(s)
 		pb.RegisterGreeterServer(s, &server{})
-		pb.RegisterEchoServer(s, &server{})
+		pb.RegisterEchoServiceServer(s, &server{})
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)
 		}
